@@ -52,9 +52,16 @@ class BorrowedBook(db.Model):
         if not self.is_returned:
             return 0.0
         
-        if self.return_date > self.due_date:
+        # Convert return_date to datetime if it's a date object
+        from datetime import datetime
+        return_date = self.return_date
+        if not isinstance(return_date, datetime):
+            # Convert date to datetime for proper comparison
+            return_date = datetime.combine(return_date, datetime.min.time())
+        
+        if return_date > self.due_date:
             # Calculate days overdue
-            days_overdue = (self.return_date - self.due_date).days
+            days_overdue = (return_date - self.due_date).days
             # Fine rate: $1 per day
             fine_amount = days_overdue * 1.0
             return fine_amount
