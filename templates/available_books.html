@@ -132,7 +132,10 @@
           <div class="book-author">by {{ book.author }}</div>
           <p class="mt-2">Available copies: {{ book.available_quantity }}</p>
           
-          <form action="{{ url_for('borrow_books') }}" method="GET">
+          <!-- Hidden form for borrowing from available books page -->
+          <form method="POST" action="{{ url_for('borrow_books') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="book_id" value="{{ book.id }}">
             <button type="submit" class="btn btn-borrow mt-2">Borrow</button>
           </form>
         </div>

@@ -94,7 +94,19 @@
         </div>
         <div class="col-md-6">
           {{ form.book_title.label(class="form-label") }}
-          {{ form.book_title(class="form-control", placeholder="Enter book title to return") }}
+          {% if borrowed_books %}
+            <select name="book_title" class="form-control" id="book_title">
+              <option value="">-- Select a book to return --</option>
+              {% for borrowed in borrowed_books %}
+                <option value="{{ borrowed.book.title }}">{{ borrowed.book.title }} (Due: {{ borrowed.due_date.strftime('%Y-%m-%d') }})</option>
+              {% endfor %}
+            </select>
+          {% else %}
+            {{ form.book_title(class="form-control", placeholder="Enter book title to return") }}
+            {% if borrowed_books is defined and borrowed_books|length == 0 %}
+              <small class="text-muted">You don't have any books to return.</small>
+            {% endif %}
+          {% endif %}
         </div>
         <div class="col-md-6">
           {{ form.return_date.label(class="form-label") }}

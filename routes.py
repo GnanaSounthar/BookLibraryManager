@@ -139,7 +139,43 @@ def borrow_books():
     
     books = query.all()
     
-    if borrow_form.validate_on_submit():
+    # Handle direct book_id in POST request (from available_books page)
+    if request.method == 'POST' and 'book_id' in request.form:
+        book_id = request.form['book_id']
+        book = Book.query.get_or_404(book_id)
+        
+        # Check if book is available
+        if book.available_quantity <= 0:
+            flash('Sorry, this book is not available for borrowing', 'danger')
+            return redirect(url_for('borrow_books'))
+        
+        # Check if user already has this book
+        existing_borrow = BorrowedBook.query.filter_by(
+            user_id=current_user.id, 
+            book_id=book_id,
+            is_returned=False
+        ).first()
+        
+        if existing_borrow:
+            flash('You have already borrowed this book and not returned it yet', 'warning')
+            return redirect(url_for('borrow_books'))
+        
+        # Create borrowed book record
+        borrowed_book = BorrowedBook(
+            user_id=current_user.id,
+            book_id=book_id
+        )
+        
+        # Update book available quantity
+        book.available_quantity -= 1
+        
+        db.session.add(borrowed_book)
+        db.session.commit()
+        
+        flash(f'Successfully borrowed: {book.title}', 'success')
+        return redirect(url_for('borrowed_history'))
+    # Handle form from borrow page
+    elif borrow_form.validate_on_submit():
         book_id = borrow_form.book_id.data
         book = Book.query.get_or_404(book_id)
         
@@ -181,6 +217,12 @@ def borrow_books():
 @login_required
 def return_book():
     form = ReturnBookForm()
+    
+    # Get currently borrowed books for dropdown selections
+    borrowed_books = BorrowedBook.query.filter_by(
+        user_id=current_user.id, 
+        is_returned=False
+    ).join(Book).all()
     
     if form.validate_on_submit():
         username = form.username.data
@@ -234,7 +276,11 @@ def return_book():
         
         return redirect(url_for('borrowed_history'))
     
-    return render_template('return.html', form=form)
+    # Prefill username for non-admin users
+    if not current_user.is_admin and not form.username.data:
+        form.username.data = current_user.username
+    
+    return render_template('return.html', form=form, borrowed_books=borrowed_books)
 
 # Borrowed History
 @app.route('/borrowed_history')
