@@ -67,6 +67,20 @@ with app.app_context():
         db.session.add(admin)
         db.session.commit()
         logger.info("Admin user created")
+    
+    # Add some sample books if they don't exist
+    if Book.query.count() == 0:
+        sample_books = [
+            Book(title="The Great Gatsby", author="F. Scott Fitzgerald", category="Novel", quantity=5, available_quantity=5),
+            Book(title="To Kill a Mockingbird", author="Harper Lee", category="Novel", quantity=3, available_quantity=3),
+            Book(title="1984", author="George Orwell", category="Novel", quantity=4, available_quantity=4),
+            Book(title="The Hobbit", author="J.R.R. Tolkien", category="Story", quantity=2, available_quantity=2),
+            Book(title="Naruto Vol. 1", author="Masashi Kishimoto", category="Anime", quantity=3, available_quantity=3),
+            Book(title="Sapiens: A Brief History of Humankind", author="Yuval Noah Harari", category="History", quantity=2, available_quantity=2)
+        ]
+        db.session.add_all(sample_books)
+        db.session.commit()
+        logger.info("Sample books created")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
