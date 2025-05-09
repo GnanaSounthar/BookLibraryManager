@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin - Manage Books</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    body {
+      background: linear-gradient(to right, #fefcea, #f1f1f1);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 2rem;
+    }
+
+    h2 {
+      color: #37474f;
+      font-weight: bold;
+      margin-bottom: 2rem;
+    }
+
+    .book-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-left: 6px solid #4db6ac;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .form-control, .form-select {
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    label {
+      font-weight: 500;
+    }
+
+    .btn-manage {
+      background-color: #00796b;
+      border: none;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+    }
+
+    .btn-manage:hover {
+      background-color: #004d40;
+    }
+
+    .icon {
+      font-size: 1.5rem;
+      color: #00796b;
+    }
+
+    .back-btn {
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2><i class="fa-solid fa-gear me-2 icon"></i>Admin - Add / Edit / Delete Books</h2>
+
+    <div class="book-card mb-4">
+      <form class="row g-3">
+        <div class="col-md-6">
+          <label for="bookTitle" class="form-label">Book Title</label>
+          <input type="text" class="form-control" id="bookTitle" placeholder="Enter book title" required />
+        </div>
+        <div class="col-md-6">
+          <label for="bookAuthor" class="form-label">Author</label>
+          <input type="text" class="form-control" id="bookAuthor" placeholder="Enter author's name" required />
+        </div>
+        <div class="col-md-6">
+          <label for="bookCategory" class="form-label">Category</label>
+          <select class="form-select" id="bookCategory" required>
+            <option value="" disabled selected>Select category</option>
+            <option>Story</option>
+            <option>Novel</option>
+            <option>Anime</option>
+            <option>Biography</option>
+            <option>Motivational</option>
+            <option>History</option>
+            <option>Educational</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="bookQuantity" class="form-label">Quantity</label>
+          <input type="number" class="form-control" id="bookQuantity" placeholder="e.g. 5" min="1" required />
+        </div>
+        <div class="col-12 d-flex gap-2">
+          <button type="submit" class="btn btn-manage">Add Book</button>
+          <button type="button" class="btn btn-outline-secondary">Update Book</button>
+          <button type="button" class="btn btn-outline-danger">Delete Book</button>
+        </div>
+      </form>
+    </div>
+
+    <a href="dashboard.html" class="btn btn-outline-success back-btn">
+      <i class="fa-solid fa-arrow-left me-1"></i>Back to Dashboard
+    </a>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

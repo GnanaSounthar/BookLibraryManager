@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Bank Management System - Login & Registration</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background: url('https://cdn.gamma.app/jo0cpkmif35ukd1/generated-images/QYoia-uoKIc4rE51j79nv.jpg') center/cover no-repeat;">
+
+    <div class="container">
+        <!-- Login Form -->
+        <div class="form-container login-container">
+            <h2>Login to Book Bank Management System</h2>
+            <form action="dashboard.html" method="POST" id="loginForm">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="loginUsername" name="username" required placeholder="Enter your username">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="loginPassword" name="password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <div class="error-message" id="loginErrorMessage"></div>
+            </form>
+            <p class="switch-form">Don't have an account? <a href="javascript:void(0);" id="showRegisterForm">Register here</a></p>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="form-container register-container" style="display: none;">
+            <h2>Create a New Account</h2>
+            <form action="registerSuccess.html" method="POST" id="registerForm">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="registerUsername" name="username" required placeholder="Enter a username">
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="registerEmail" name="email" required placeholder="Enter your email">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="registerPassword" name="password" required placeholder="Create a password">
+                </div>
+                <div class="input-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm your password">
+                </div>
+                <button type="submit" class="btn">Register</button>
+                <div class="error-message" id="registerErrorMessage"></div>
+            </form>
+            <p class="switch-form">Already have an account? <a href="javascript:void(0);" id="showLoginForm">Login here</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Switch between login and register forms
+        document.getElementById("showRegisterForm").addEventListener("click", function() {
+            document.querySelector(".login-container").style.display = "none";
+            document.querySelector(".register-container").style.display = "block";
+        });
+
+        document.getElementById("showLoginForm").addEventListener("click", function() {
+            document.querySelector(".login-container").style.display = "block";
+            document.querySelector(".register-container").style.display = "none";
+        });
+    </script>
+</body>
+</html>
