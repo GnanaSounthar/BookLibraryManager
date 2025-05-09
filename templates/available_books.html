@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Available Books</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      background: linear-gradient(to right, #fefcea, #f1f1f1);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 2rem;
+    }
+
+    h2 {
+      color: #37474f;
+      font-weight: bold;
+      margin-bottom: 2rem;
+    }
+
+    .book-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-left: 6px solid #4db6ac;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .book-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #263238;
+    }
+
+    .book-author {
+      font-size: 0.95rem;
+      color: #607d8b;
+    }
+
+    .category-tag {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      background-color: #4db6ac;
+      color: #fff;
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+    }
+
+    .btn-borrow {
+      background-color: #00796b;
+      border: none;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+    }
+
+    .btn-borrow:hover {
+      background-color: #004d40;
+    }
+
+    .back-btn {
+      margin-top: 2rem;
+    }
+
+    .icon {
+      font-size: 1.5rem;
+      color: #00796b;
+    }
+    
+    .search-box {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2><i class="fa-solid fa-book-open me-2 icon"></i>Available Books</h2>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <!-- Search Form -->
+    <div class="search-box">
+      <form method="POST" action="{{ url_for('available_books') }}" class="row g-3">
+        {{ search_form.hidden_tag() }}
+        <div class="col-md-6">
+          {{ search_form.search_term.label(class="form-label") }}
+          {{ search_form.search_term(class="form-control", placeholder="Search by title or author") }}
+        </div>
+        <div class="col-md-4">
+          {{ search_form.category.label(class="form-label") }}
+          {{ search_form.category(class="form-select") }}
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          {{ search_form.submit(class="btn btn-primary w-100") }}
+        </div>
+      </form>
+    </div>
+    
+    <div class="row g-4">
+      {% for book in books %}
+      <div class="col-md-4">
+        <div class="book-card">
+          <div class="category-tag">{{ book.category }}</div>
+          <div class="book-title">{{ book.title }}</div>
+          <div class="book-author">by {{ book.author }}</div>
+          <p class="mt-2">Available copies: {{ book.available_quantity }}</p>
+          
+          <form action="{{ url_for('borrow_books') }}" method="GET">
+            <button type="submit" class="btn btn-borrow mt-2">Borrow</button>
+          </form>
+        </div>
+      </div>
+      {% else %}
+      <div class="col-12">
+        <div class="alert alert-info">
+          No books available matching your search criteria.
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary back-btn">
+      <i class="fa-solid fa-arrow-left me-1"></i>Back to Dashboard
+    </a>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

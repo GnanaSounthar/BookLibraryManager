@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin - Manage Books</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    body {
+      background: linear-gradient(to right, #fefcea, #f1f1f1);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 2rem;
+    }
+
+    h2 {
+      color: #37474f;
+      font-weight: bold;
+      margin-bottom: 2rem;
+    }
+
+    .book-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-left: 6px solid #4db6ac;
+      margin-bottom: 2rem;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .form-control, .form-select {
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    label {
+      font-weight: 500;
+    }
+
+    .btn-manage {
+      background-color: #00796b;
+      border: none;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+    }
+
+    .btn-manage:hover {
+      background-color: #004d40;
+    }
+
+    .icon {
+      font-size: 1.5rem;
+      color: #00796b;
+    }
+
+    .back-btn {
+      margin-top: 2rem;
+    }
+    
+    .books-table {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2><i class="fa-solid fa-gear me-2 icon"></i>Admin - Add / Edit / Delete Books</h2>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Search Form -->
+    <div class="book-card">
+      <h4>Search Books</h4>
+      <form method="POST" action="{{ url_for('admin_books') }}" class="row g-3">
+        {{ search_form.hidden_tag() }}
+        <div class="col-md-6">
+          {{ search_form.search_term.label(class="form-label") }}
+          {{ search_form.search_term(class="form-control", placeholder="Search by title or author") }}
+        </div>
+        <div class="col-md-4">
+          {{ search_form.category.label(class="form-label") }}
+          {{ search_form.category(class="form-select") }}
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          {{ search_form.submit(class="btn btn-primary w-100") }}
+        </div>
+      </form>
+    </div>
+
+    <!-- Add Book Form -->
+    <div class="book-card" id="addBookForm">
+      <h4>Add New Book</h4>
+      <form class="row g-3" method="POST" action="{{ url_for('admin_books') }}">
+        {{ add_form.hidden_tag() }}
+        <div class="col-md-6">
+          {{ add_form.title.label(class="form-label") }}
+          {{ add_form.title(class="form-control", placeholder="Enter book title") }}
+        </div>
+        <div class="col-md-6">
+          {{ add_form.author.label(class="form-label") }}
+          {{ add_form.author(class="form-control", placeholder="Enter author's name") }}
+        </div>
+        <div class="col-md-6">
+          {{ add_form.category.label(class="form-label") }}
+          {{ add_form.category(class="form-select") }}
+        </div>
+        <div class="col-md-6">
+          {{ add_form.quantity.label(class="form-label") }}
+          {{ add_form.quantity(class="form-control", placeholder="e.g. 5", min="1") }}
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-manage" name="add">Add Book</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Update Book Form (Hidden by default) -->
+    <div class="book-card" id="updateBookForm" style="display: none;">
+      <h4>Update Book</h4>
+      <form class="row g-3" method="POST" action="{{ url_for('admin_books') }}">
+        {{ update_form.hidden_tag() }}
+        {{ update_form.book_id(id="update_book_id") }}
+        <div class="col-md-6">
+          {{ update_form.title.label(class="form-label") }}
+          {{ update_form.title(class="form-control", id="update_title", placeholder="Enter book title") }}
+        </div>
+        <div class="col-md-6">
+          {{ update_form.author.label(class="form-label") }}
+          {{ update_form.author(class="form-control", id="update_author", placeholder="Enter author's name") }}
+        </div>
+        <div class="col-md-6">
+          {{ update_form.category.label(class="form-label") }}
+          {{ update_form.category(class="form-select", id="update_category") }}
+        </div>
+        <div class="col-md-6">
+          {{ update_form.quantity.label(class="form-label") }}
+          {{ update_form.quantity(class="form-control", id="update_quantity", placeholder="e.g. 5", min="1") }}
+        </div>
+        <div class="col-12 d-flex gap-2">
+          <button type="submit" class="btn btn-manage" name="update">Update Book</button>
+          <button type="button" class="btn btn-outline-secondary" id="cancelUpdate">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Book List Table -->
+    <div class="books-table">
+      <h4>Book Inventory</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+            <th scope="col">Category</th>
+            <th scope="col">Total</th>
+            <th scope="col">Available</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for book in books %}
+          <tr>
+            <th scope="row">{{ book.id }}</th>
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.category }}</td>
+            <td>{{ book.quantity }}</td>
+            <td>{{ book.available_quantity }}</td>
+            <td>
+              <button class="btn btn-sm btn-primary update-book-btn" data-id="{{ book.id }}">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="btn btn-sm btn-danger delete-book-btn" data-id="{{ book.id }}" data-title="{{ book.title }}">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="text-center">No books found</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Hidden delete form -->
+    <form id="deleteBookForm" method="POST" action="{{ url_for('admin_books') }}" style="display: none;">
+      {{ delete_form.hidden_tag() }}
+      {{ delete_form.book_id(id="delete_book_id") }}
+      <button type="submit" name="delete">Delete</button>
+    </form>
+
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-success back-btn">
+      <i class="fa-solid fa-arrow-left me-1"></i>Back to Dashboard
+    </a>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

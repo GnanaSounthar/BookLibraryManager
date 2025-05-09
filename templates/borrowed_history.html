@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Borrowed History</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    body {
+      background: linear-gradient(to right, #fefcea, #f1f1f1);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 2rem;
+    }
+
+    h2 {
+      color: #37474f;
+      font-weight: bold;
+      margin-bottom: 2rem;
+    }
+
+    .history-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-left: 6px solid #4db6ac;
+    }
+
+    .history-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .table {
+      font-size: 1rem;
+    }
+
+    .btn-back {
+      background-color: #00796b;
+      border: none;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+    }
+
+    .btn-back:hover {
+      background-color: #004d40;
+    }
+
+    .icon {
+      font-size: 1.5rem;
+      color: #00796b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2><i class="fa-solid fa-clipboard-list me-2 icon"></i>Borrowed History</h2>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if current_user.is_admin %}
+    <div class="mb-3">
+      {% if show_all %}
+      <a href="{{ url_for('borrowed_history') }}" class="btn btn-outline-primary">Show My History Only</a>
+      {% else %}
+      <a href="{{ url_for('borrowed_history', show_all=1) }}" class="btn btn-outline-primary">Show All Users' History</a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="history-card mb-4">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            {% if show_all %}
+            <th scope="col">User</th>
+            {% endif %}
+            <th scope="col">Book Title</th>
+            <th scope="col">Borrowed On</th>
+            <th scope="col">Due Date</th>
+            <th scope="col">Return Date</th>
+            <th scope="col">Fine</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for borrowed in borrowed_books %}
+          <tr>
+            <th scope="row">{{ loop.index }}</th>
+            {% if show_all %}
+            <td>{{ borrowed.borrower.username }}</td>
+            {% endif %}
+            <td>{{ borrowed.book.title }}</td>
+            <td>{{ borrowed.borrow_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ borrowed.due_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ borrowed.return_date.strftime('%Y-%m-%d') if borrowed.return_date else '-' }}</td>
+            <td>
+              {% if borrowed.fine_amount > 0 %}
+              <span class="text-danger">${{ borrowed.fine_amount }}</span>
+              {% else %}
+              -
+              {% endif %}
+            </td>
+            <td>
+              {% if borrowed.is_returned %}
+              <span class="badge bg-success">Returned</span>
+              {% elif borrowed.is_overdue() %}
+              <span class="badge bg-danger">Overdue</span>
+              {% else %}
+              <span class="badge bg-warning text-dark">Borrowed</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="{% if show_all %}8{% else %}7{% endif %}" class="text-center">No borrowed history found</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-success btn-back">
+      <i class="fa-solid fa-arrow-left me-1"></i>Back to Dashboard
+    </a>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

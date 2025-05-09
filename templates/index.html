@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Bank Management System - Login & Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body style="background: url('https://cdn.gamma.app/jo0cpkmif35ukd1/generated-images/QYoia-uoKIc4rE51j79nv.jpg') center/cover no-repeat;">
+
+    <div class="container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <!-- Login Form -->
+        <div class="form-container login-container" {% if 'register' in request.form %}style="display: none;"{% endif %}>
+            <h2>Login to Book Bank Management System</h2>
+            <form action="{{ url_for('index') }}" method="POST" id="loginForm">
+                {{ login_form.hidden_tag() }}
+                <div class="input-group">
+                    {{ login_form.username.label }}
+                    {{ login_form.username(class="form-control", placeholder="Enter your username") }}
+                </div>
+                <div class="input-group">
+                    {{ login_form.password.label }}
+                    {{ login_form.password(class="form-control", placeholder="Enter your password") }}
+                </div>
+                <button type="submit" class="btn" name="login">Login</button>
+                <div class="error-message" id="loginErrorMessage"></div>
+            </form>
+            <p class="switch-form">Don't have an account? <a href="javascript:void(0);" id="showRegisterForm">Register here</a></p>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="form-container register-container" {% if 'register' not in request.form %}style="display: none;"{% endif %}>
+            <h2>Create a New Account</h2>
+            <form action="{{ url_for('index') }}" method="POST" id="registerForm">
+                {{ register_form.hidden_tag() }}
+                <div class="input-group">
+                    {{ register_form.username.label }}
+                    {{ register_form.username(class="form-control", placeholder="Enter a username") }}
+                </div>
+                <div class="input-group">
+                    {{ register_form.email.label }}
+                    {{ register_form.email(class="form-control", placeholder="Enter your email") }}
+                </div>
+                <div class="input-group">
+                    {{ register_form.password.label }}
+                    {{ register_form.password(class="form-control", placeholder="Create a password") }}
+                </div>
+                <div class="input-group">
+                    {{ register_form.confirm_password.label }}
+                    {{ register_form.confirm_password(class="form-control", placeholder="Confirm your password") }}
+                </div>
+                <button type="submit" class="btn" name="register">Register</button>
+                <div class="error-message" id="registerErrorMessage"></div>
+            </form>
+            <p class="switch-form">Already have an account? <a href="javascript:void(0);" id="showLoginForm">Login here</a></p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
