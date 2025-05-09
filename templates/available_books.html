@@ -134,7 +134,7 @@
           
           <!-- Hidden form for borrowing from available books page -->
           <form method="POST" action="{{ url_for('borrow_books') }}">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {{ search_form.csrf_token }}
             <input type="hidden" name="book_id" value="{{ book.id }}">
             <button type="submit" class="btn btn-borrow mt-2">Borrow</button>
           </form>

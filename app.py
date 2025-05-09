@@ -8,6 +8,7 @@ from sqlalchemy.orm import DeclarativeBase
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_wtf.csrf import CSRFProtect
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -35,10 +36,13 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 # Initialize extensions
 db.init_app(app)
 
+# Initialize CSRF protection
+csrf = CSRFProtect(app)
+
 # Initialize login manager
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'index'
 login_manager.login_message = 'Please log in to access this page.'
 
 # Imports below to avoid circular imports
