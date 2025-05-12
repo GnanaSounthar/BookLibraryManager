@@ -263,6 +263,12 @@ def return_book():
         # Calculate and update fine if applicable
         borrowed_record.update_fine()
         
+        # Display fine information
+        if borrowed_record.fine_amount > 0:
+            flash(f'Book returned with a fine of {borrowed_record.fine_amount} rupees. (1 rupee per day for {int(borrowed_record.fine_amount)} days late)', 'warning')
+        else:
+            flash('Book returned successfully with no fine.', 'success')
+        
         # Update book availability
         book.available_quantity += 1
         

@@ -62,7 +62,7 @@ class BorrowedBook(db.Model):
         if return_date > self.due_date:
             # Calculate days overdue
             days_overdue = (return_date - self.due_date).days
-            # Fine rate: $1 per day
+            # Fine rate: 1 rupee per day
             fine_amount = days_overdue * 1.0
             return fine_amount
         return 0.0

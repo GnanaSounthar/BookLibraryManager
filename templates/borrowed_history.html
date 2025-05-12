@@ -115,7 +115,7 @@
             <td>{{ borrowed.return_date.strftime('%Y-%m-%d') if borrowed.return_date else '-' }}</td>
             <td>
               {% if borrowed.fine_amount > 0 %}
-              <span class="text-danger">${{ borrowed.fine_amount }}</span>
+              <span class="text-danger">₹{{ borrowed.fine_amount }} ({{ borrowed.fine_amount|int }} days late)</span>
               {% else %}
               -
               {% endif %}
